@@ -38,8 +38,8 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Terraform plan
-        run: terraform plan \
-          -var="db_username=${{ secrets.DATABASE_USER }}" \
-          -var="db_password=${{ secrets.DATABASE_PASSWORD }}" \
-          -out=tfplan
+      - name: Terraform apply
+        run: |
+          terraform apply \
+            -var="db_username=${{ secrets.DATABASE_USER }}" \
+            -var="db_password=${{ secrets.DATABASE_PASSWORD }}"
