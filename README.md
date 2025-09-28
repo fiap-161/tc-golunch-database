@@ -4,7 +4,7 @@
 
 Para garantir que a infraestrutura seja criada/atualizada corretamente via **GitHub Actions**, siga os passos abaixo:
 
-1. Atualizar Secrets da Organização
+1. Atualizar Secrets da Organização:
   Antes de rodar o pipeline, verifique se as **secrets da organização** estão configuradas em:
   [Configurações de Secrets](https://github.com/fiap-161/tc-golunch-infra/settings/secrets/actions)
 
