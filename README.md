@@ -5,9 +5,9 @@
 Para garantir que a infraestrutura seja criada/atualizada corretamente via **GitHub Actions**, siga os passos abaixo:
 
 1. Atualizar Secrets da Organização
-  Antes de rodar o pipeline, verifique se as **secrets da organização** estão configuradas em:  
+  Antes de rodar o pipeline, verifique se as **secrets da organização** estão configuradas em:
   [Configurações de Secrets](https://github.com/fiap-161/tc-golunch-infra/settings/secrets/actions)
-  
+
   As secrets necessárias são:
   - `AWS_ACCESS_KEY_ID`
   - `AWS_SECRET_ACCESS_KEY`
@@ -19,7 +19,7 @@ Para garantir que a infraestrutura seja criada/atualizada corretamente via **Git
   - `DATABASE_PASSWORD`
 
 ➡️ Já estão configurados, mas podem ser alterados caso assim deseje.
-  
+
 
 2. Criar uma Branch a partir da `main`, dar push nas alterações
 3. Abrir um Pull Request.
@@ -35,7 +35,7 @@ O projeto provisiona, via Terraform, uma instância do Amazon RDS PostgreSQL con
 - Segurança: o usuário e senha do banco são parametrizados por variáveis do Terraform e injetados a partir de GitHub Secrets, evitando exposição de credenciais no código.
 - URL: a URL do banco fica disponível via AWS Secrets com o nome `golunch/db-url`
 
-### ⚙️ Pipeline CI/CD (GitHub Actions)
+### ⚙️ Pipeline CI/CD (GitHub Actions).
 
 O repositório contém um pipeline configurado no **GitHub Actions** que executa as seguintes etapas:
 
