@@ -4,7 +4,8 @@ terraform.tfstate
 terraform.tfstate.backup
 *.tfstate
 *.tfstate.*
-
+.idea
+.DS_Store
 
 backend-s3/.terraform/
 backend-s3/.terraform.lock.hcl
