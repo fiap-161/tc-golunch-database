@@ -1,0 +1,13 @@
+# terraform.tfvars.example
+# Copy this file to terraform.tfvars and fill with real values
+
+# Database credentials for original golunch database
+db_username = "golunch_admin"
+db_password = "CHANGE_THIS_SECURE_PASSWORD"
+
+# Core Service database credentials  
+core_db_username = "golunch_core_user"
+core_db_password = "CHANGE_THIS_CORE_DB_PASSWORD"
+
+# AWS Account ID (for AWS Academy or your account)
+account = "123456789012"

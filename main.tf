@@ -90,7 +90,7 @@ resource "aws_db_subnet_group" "db_subnet_group" {
   }
 }
 
-# Instância RDS PostgreSQL
+# Instância RDS PostgreSQL (Original - mantido para compatibilidade)
 resource "aws_db_instance" "golunch_postgres" {
   identifier             = "golunch-postgres"
   engine                 = "postgres"
@@ -106,7 +106,48 @@ resource "aws_db_instance" "golunch_postgres" {
   skip_final_snapshot    = true
 }
 
-# Output da URL de conexão
+# Nova instância RDS PostgreSQL para Core Service
+resource "aws_db_instance" "golunch_core_postgres" {
+  identifier             = "golunch-core-prod"
+  engine                 = "postgres"
+  engine_version         = "17"
+  instance_class         = "db.t3.micro"
+  allocated_storage      = 20
+  db_name                = "golunch_core"
+  username               = var.core_db_username
+  password               = var.core_db_password
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
+  vpc_security_group_ids = [aws_security_group.db_sg.id]
+  publicly_accessible    = true
+  skip_final_snapshot    = true
+  
+  backup_retention_period = 7
+  backup_window          = "03:00-04:00"
+  maintenance_window     = "sun:04:00-sun:05:00"
+  
+  tags = {
+    Name = "golunch-core-database"
+    Service = "core"
+  }
+}
+
+# Output da URL de conexão (Original)
 output "database_url" {
   value = aws_db_instance.golunch_postgres.address
+}
+
+# Outputs para Core Service
+output "core_database_url" {
+  description = "Core Service database endpoint"
+  value       = aws_db_instance.golunch_core_postgres.address
+}
+
+output "core_database_port" {
+  description = "Core Service database port"
+  value       = aws_db_instance.golunch_core_postgres.port
+}
+
+output "core_database_name" {
+  description = "Core Service database name"
+  value       = aws_db_instance.golunch_core_postgres.db_name
 }

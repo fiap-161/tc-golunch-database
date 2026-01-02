@@ -15,15 +15,67 @@ Para garantir que a infraestrutura seja criada/atualizada corretamente via **Git
 
 ➡️ Essas credenciais são utilizadas pelo Terraform para autenticar na AWS.
 
-  - `DATABASE_USER`
-  - `DATABASE_PASSWORD`
+  **Secrets de Database (Microservices):**
+  - `CORE_DB_USERNAME` / `CORE_DB_PASSWORD`
+  - `OPERATION_DB_USERNAME` / `OPERATION_DB_PASSWORD`  
+  - `MONGODB_USERNAME` / `MONGODB_PASSWORD`
+  - `DATABASE_USER` / `DATABASE_PASSWORD` (legacy - mantido para compatibilidade)
 
 ➡️ Já estão configurados, mas podem ser alterados caso assim deseje.
 
 
 2. Criar uma Branch a partir da `main`, dar push nas alterações
-3. Abrir um Pull Request.
+3. Abrir um Pull Request
 
+
+## 🏗️ Arquitetura de Bancos de Dados - Microservices (Fase 4)
+
+### 📊 **Visão Geral da Nova Arquitetura**
+
+O projeto provisiona **múltiplos bancos de dados isolados** via Terraform para suportar a arquitetura de microservices:
+
+```
+┌─────────────────────┐    ┌─────────────────────┐
+│   Core Service      │◄──►│ PostgreSQL RDS      │
+│   (Orders/Products) │    │ golunch_core        │
+└─────────────────────┘    └─────────────────────┘
+
+┌─────────────────────┐    ┌─────────────────────┐
+│ Payment Service     │◄──►│ DocumentDB/MongoDB  │
+│ (Payments/QRCode)   │    │ golunch_payments    │
+└─────────────────────┘    └─────────────────────┘
+
+┌─────────────────────┐    ┌─────────────────────┐
+│ Operation Service   │◄──►│ PostgreSQL RDS      │
+│ (Kitchen/Status)    │    │ golunch_operation   │
+└─────────────────────┘    └─────────────────────┘
+```
+
+### 🗄️ **Bancos de Dados por Serviço**
+
+#### **1. Core Service Database (PostgreSQL)**
+- **Instância**: `golunch-core-prod` 
+- **Engine**: PostgreSQL 17
+- **Database**: `golunch_core`
+- **Responsabilidade**: Orders, Products, Customers
+- **Classe**: db.t3.micro (2 vCPU, 1GB RAM)
+- **Armazenamento**: 20GB SSD
+
+#### **2. Payment Service Database (DocumentDB/MongoDB)**
+- **Instância**: `golunch-payment-cluster`
+- **Engine**: DocumentDB (MongoDB compatível) 
+- **Database**: `golunch_payments`
+- **Responsabilidade**: Payments, MercadoPago integration
+- **Classe**: db.t3.medium
+- **Armazenamento**: Managed by DocumentDB
+
+#### **3. Operation Service Database (PostgreSQL)**  
+- **Instância**: `golunch-operation-prod`
+- **Engine**: PostgreSQL 17
+- **Database**: `golunch_operation`
+- **Responsabilidade**: Kitchen operations, Order status
+- **Classe**: db.t3.micro (2 vCPU, 1GB RAM)
+- **Armazenamento**: 20GB SSD
 
 ## Infra do Banco de Dados AWS - RDS - PostgreSQL
 O projeto provisiona, via Terraform, uma instância do Amazon RDS PostgreSQL configurada para ser utilizada pela aplicação Go.
