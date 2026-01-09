@@ -121,10 +121,6 @@ resource "aws_db_instance" "golunch_core_postgres" {
   publicly_accessible    = true
   skip_final_snapshot    = true
 
-  backup_retention_period = 7
-  backup_window           = "03:00-04:00"
-  maintenance_window      = "sun:04:00-sun:05:00"
-
   tags = {
     Name    = "golunch-core-database"
     Service = "core"
