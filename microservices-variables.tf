@@ -1,17 +1,19 @@
 # Additional variables for microservices databases
 
-# Payment Service (MongoDB/DocumentDB)
+# Payment Service (DynamoDB)
+# Nota: DynamoDB não requer username/password, essas variáveis não são mais usadas
+# Mantidas para referência caso necessário no futuro
 variable "mongodb_username" {
-  description = "Payment Service DocumentDB username"
+  description = "Payment Service - não utilizado (DynamoDB não requer autenticação)"
   type        = string
-  default     = "golunch_payment"
+  default     = ""
 }
 
 variable "mongodb_password" {
-  description = "Payment Service DocumentDB password"
+  description = "Payment Service - não utilizado (DynamoDB não requer autenticação)"
   type        = string
   sensitive   = true
-  default     = "golunch_payment123"
+  default     = ""
 }
 
 # Operation Service Database
