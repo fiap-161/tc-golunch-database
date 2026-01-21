@@ -185,7 +185,7 @@ resource "aws_docdb_cluster_instance" "golunch_payment_docdb_instance" {
   identifier         = "golunch-payment-docdb-instance"
   cluster_identifier = aws_docdb_cluster.golunch_payment_docdb.id
   instance_class     = "db.t3.small"
-  
+
   tags = {
     Name    = "golunch-payment-docdb-instance"
     Service = "payment"
