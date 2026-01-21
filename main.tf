@@ -127,6 +127,87 @@ resource "aws_db_instance" "golunch_core_postgres" {
   }
 }
 
+# Security Group para DocumentDB (porta 27017)
+resource "aws_security_group" "docdb_sg" {
+  vpc_id = aws_vpc.golunch_vpc.id
+  name   = "golunch-docdb-sg"
+
+  ingress {
+    from_port   = 27017
+    to_port     = 27017
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "DocumentDB access"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "golunch-docdb-sg"
+  }
+}
+
+# Subnet Group para DocumentDB
+resource "aws_docdb_subnet_group" "docdb_subnet_group" {
+  name       = "golunch-docdb-subnet-group"
+  subnet_ids = aws_subnet.public_subnet[*].id
+
+  tags = {
+    Name = "golunch-docdb-subnet-group"
+  }
+}
+
+# Cluster DocumentDB para Payment Service
+resource "aws_docdb_cluster" "golunch_payment_docdb" {
+  cluster_identifier              = "golunch-payment-cluster"
+  engine                          = "docdb"
+  master_username                 = var.mongodb_username
+  master_password                 = var.mongodb_password
+  db_subnet_group_name            = aws_docdb_subnet_group.docdb_subnet_group.name
+  vpc_security_group_ids          = [aws_security_group.docdb_sg.id]
+  skip_final_snapshot             = true
+  storage_encrypted               = true
+  enabled_cloudwatch_logs_exports = ["audit", "profiler"]
+
+  tags = {
+    Name    = "golunch-payment-documentdb"
+    Service = "payment"
+  }
+}
+
+# Instância do DocumentDB Cluster
+resource "aws_docdb_cluster_instance" "golunch_payment_docdb_instance" {
+  identifier         = "golunch-payment-docdb-instance"
+  cluster_identifier = aws_docdb_cluster.golunch_payment_docdb.id
+  instance_class     = "db.t3.small"
+
+  tags = {
+    Name    = "golunch-payment-docdb-instance"
+    Service = "payment"
+  }
+}
+
+# Outputs para DocumentDB
+output "docdb_endpoint" {
+  description = "DocumentDB cluster endpoint"
+  value       = aws_docdb_cluster.golunch_payment_docdb.endpoint
+}
+
+output "docdb_port" {
+  description = "DocumentDB cluster port"
+  value       = aws_docdb_cluster.golunch_payment_docdb.port
+}
+
+output "docdb_reader_endpoint" {
+  description = "DocumentDB cluster reader endpoint"
+  value       = aws_docdb_cluster.golunch_payment_docdb.reader_endpoint
+}
+
 # Output da URL de conexão (Original)
 output "database_url" {
   value = aws_db_instance.golunch_postgres.address
