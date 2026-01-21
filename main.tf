@@ -144,6 +144,40 @@ resource "aws_dynamodb_table" "golunch_payment" {
   }
 }
 
+# IAM Policy para acesso ao DynamoDB Payment
+resource "aws_iam_policy" "dynamodb_payment_access" {
+  name        = "DynamoDBPaymentAccess"
+  description = "Permite acesso à tabela DynamoDB de pagamentos para o Payment Service"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Query",
+          "dynamodb:Scan",
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem"
+        ]
+        Resource = [
+          aws_dynamodb_table.golunch_payment.arn,
+          "${aws_dynamodb_table.golunch_payment.arn}/index/*"
+        ]
+      }
+    ]
+  })
+
+  tags = {
+    Name    = "DynamoDBPaymentAccess"
+    Service = "payment"
+  }
+}
+
 # Outputs para DynamoDB
 output "dynamodb_table_name" {
   description = "DynamoDB table name for Payment Service"
@@ -158,6 +192,11 @@ output "dynamodb_table_arn" {
 output "dynamodb_table_id" {
   description = "DynamoDB table ID for Payment Service"
   value       = aws_dynamodb_table.golunch_payment.id
+}
+
+output "dynamodb_payment_policy_arn" {
+  description = "ARN da IAM Policy para acesso ao DynamoDB Payment (use este ARN no microserviço de pagamentos)"
+  value       = aws_iam_policy.dynamodb_payment_access.arn
 }
 
 # Output da URL de conexão (Original)
