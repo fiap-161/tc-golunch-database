@@ -164,14 +164,14 @@ resource "aws_docdb_subnet_group" "docdb_subnet_group" {
 
 # Cluster DocumentDB para Payment Service
 resource "aws_docdb_cluster" "golunch_payment_docdb" {
-  cluster_identifier      = "golunch-payment-cluster"
-  engine                  = "docdb"
-  master_username         = var.mongodb_username
-  master_password         = var.mongodb_password
-  db_subnet_group_name    = aws_docdb_subnet_group.docdb_subnet_group.name
-  vpc_security_group_ids  = [aws_security_group.docdb_sg.id]
-  skip_final_snapshot     = true
-  storage_encrypted       = true
+  cluster_identifier              = "golunch-payment-cluster"
+  engine                          = "docdb"
+  master_username                 = var.mongodb_username
+  master_password                 = var.mongodb_password
+  db_subnet_group_name            = aws_docdb_subnet_group.docdb_subnet_group.name
+  vpc_security_group_ids          = [aws_security_group.docdb_sg.id]
+  skip_final_snapshot             = true
+  storage_encrypted               = true
   enabled_cloudwatch_logs_exports = ["audit", "profiler"]
 
   tags = {
