@@ -43,3 +43,15 @@ variable "core_db_password" {
   sensitive   = true
   default     = "golunch_core123"
 }
+
+variable "db_username" {
+  description = "Database master username"
+  type        = string
+  default     = ""
+}
+
+variable "db_password" {
+  description = "Database master password"
+  type        = string
+  sensitive   = true
+}
