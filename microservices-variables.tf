@@ -47,7 +47,7 @@ variable "core_db_password" {
 variable "db_username" {
   description = "Database master username"
   type        = string
-  default = ""
+  default     = ""
 }
 
 variable "db_password" {
